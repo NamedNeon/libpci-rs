@@ -1,0 +1,11 @@
+[package]
+name = "compat"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+libc = "0.2.148"
+bindgen = "0.68.1"
