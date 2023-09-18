@@ -12,12 +12,18 @@ set(CTEST_OUTPUT_ON_FAILURE 1)
 set(SOURCE_FILES common.c)
 
 if(APPLE)
-    set(SOURCE_FILES ${SOURCE_FILES} darwin/mod.cpp)
+    set(SOURCE_FILES ${SOURCE_FILES} darwin/mod.cc)
 elseif(BSD STREQUAL "OpenBSD")
     set(SOURCE_FILES ${SOURCE_FILES} bsd/mod.c)
 else()
     set(SOURCE_FILES ${SOURCE_FILES} stub.c)
     message(WARNING "Attempt to compile on unknown target, including stub API.")
+endif()
+
+# Since we need C++ for some OSes (i.e. Darwin). We are including some extra C++ goodies on top of the normal
+# C API so we can elegant solid C++ code.
+if(CPP_BACKEND)
+    set(SOURCE_FILES ${SOURCE_FILES} common.cc)
 endif()
 
 add_library(libpci-rs-c-backend STATIC ${SOURCE_FILES})

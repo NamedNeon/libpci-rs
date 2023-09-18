@@ -1,0 +1,8 @@
+# ninja log v5
+0	112	1695061785205879164	CMakeFiles/test_stack.dir/tests/test_stack.c.o	ab9cdfbac72182e7
+0	117	1695061785211278194	CMakeFiles/libpci-rs-c-backend.dir/common.c.o	9123134a72aa858b
+0	405	1695061785499049570	CMakeFiles/libpci-rs-c-backend.dir/darwin/mod.cc.o	3c6702eb1d6b3825
+407	490	1695061785586614000	liblibpci-rs-c-backend.a	f0fa3408be9b52ec
+490	535	1695061785631004695	test_stack	dfed7c1dc03e659b
+14	339	1695064264873257860	CMakeFiles/test_stack.dir/tests/test_stack.c.o	ab9cdfbac72182e7
+14	343	1695064264880469212	CMakeFiles/libpci-rs-c-backend.dir/common.c.o	9123134a72aa858b

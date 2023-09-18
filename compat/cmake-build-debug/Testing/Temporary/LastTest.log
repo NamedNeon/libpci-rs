@@ -1,0 +1,18 @@
+Start testing: Sep 18 14:29 EDT
+----------------------------------------------------------
+1/1 Testing: test_stack
+1/1 Test: test_stack
+Command: "/Users/neonoverflow/Projects/libpci-rs/compat/cmake-build-debug/test_stack"
+Directory: /Users/neonoverflow/Projects/libpci-rs/compat/cmake-build-debug
+"test_stack" start time: Sep 18 14:29 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.20 sec
+----------------------------------------------------------
+Test Passed.
+"test_stack" end time: Sep 18 14:29 EDT
+"test_stack" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 18 14:29 EDT

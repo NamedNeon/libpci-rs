@@ -25,61 +25,50 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-use crate::backend::common::{PciDevice, PciEnumerationError};
-use std::ffi::c_void;
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct CPciDevice {
-    pub domain: u32,
-    pub bus: u8,
-    pub device: u8,
-    pub function: u8,
-    pub vendor_id: u16,
-    pub device_id: u16,
-    pub subsys_device_id: u16,
-    pub subsys_vendor_id: u16,
-    pub dev_class: u8,
-    pub subclass: u8,
-    pub programming_interface: u8,
-    pub revision_id: u8,
-    pub label: *mut ::std::os::raw::c_char,
+#include "api.h"
+
+__attribute__((__always_inline__))
+pci_device_stack_t create_pci_device_stack() {
+    pci_device_stack_t stack;
+    stack.buffer = NULL;
+    stack.len = 0;
+    return stack;
 }
 
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct CPciDeviceStack {
-    pub len: usize,
-    pub buffer: *mut CPciDevice,
+__attribute__((__always_inline__))
+void free_pci_device_stack(pci_device_stack_t* stack) {
+    free(stack->buffer);
+    stack->len = 0;
 }
 
-extern "C" {
-    fn get_pci_list() -> CPciDeviceStack;
-    fn get_pci_by_id(vendor: u16, device: u16) -> CPciDevice;
-    fn create_pci_device_stack() -> CPciDeviceStack;
-    fn free_pci_device_stack(stack: *mut CPciDeviceStack);
-    fn pci_device_stack_push(stack: *mut CPciDeviceStack, device: CPciDevice) -> u32;
-    fn pci_device_stack_pop(stack: *mut CPciDeviceStack) -> CPciDevice;
-}
+int pci_device_stack_push(pci_device_stack_t* stack, pci_device_t device) {
+    stack->len++;
+    pci_device_t* buffer = realloc(stack->buffer, stack->len * sizeof(pci_device_t));
 
-#[inline]
-pub fn _get_pci_list() -> Result<Vec<PciDevice>, PciEnumerationError> {
-    let mut c_pci_stack = unsafe { get_pci_list() };
-
-    unsafe {
-        free_pci_device_stack(&mut c_pci_stack);
+    if(buffer == NULL) {
+        return -1;
     }
 
-    todo!()
+    stack->buffer = buffer;
+    stack->buffer[stack->len - 1] = device;
+
+    return 0;
 }
 
-#[inline]
-pub fn _get_pci_by_id(vendor: u16, device: u16) -> Result<PciDevice, PciEnumerationError> {
-    todo!()
+pci_device_t pci_device_stack_pop(pci_device_stack_t* stack) {
+    stack->len--;
+    pci_device_t device = stack->buffer[stack->len];
+
+    pci_device_t* buffer = realloc(stack->buffer, stack->len * sizeof(pci_device_t));
+    assert(!(buffer == NULL && stack->len > 0));
+
+    stack->buffer = buffer;
+
+    return device;
 }
 
-// #[cfg(test)]
-// mod tests {
-//     #[test]
-//
-// }
+void extern throw_error(char* error);
