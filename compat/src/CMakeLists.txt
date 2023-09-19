@@ -12,7 +12,7 @@ set(CTEST_OUTPUT_ON_FAILURE 1)
 set(SOURCE_FILES common.c common.cpp)
 
 if(APPLE)
-    set(SOURCE_FILES ${SOURCE_FILES} darwin/mod.cpp)
+    set(SOURCE_FILES ${SOURCE_FILES} darwin/mod.c)
 elseif(BSD STREQUAL "OpenBSD")
     set(SOURCE_FILES ${SOURCE_FILES} bsd/mod.c)
 else()

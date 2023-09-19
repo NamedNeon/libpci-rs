@@ -1,8 +1,0 @@
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -G Ninja -S C:\Users\Neon\Projects\Coding\pci-info-rs\compat\src -B C:\Users\Neon\Projects\Coding\pci-info-rs\compat\src\cmake-build-debug
-CMake Warning at CMakeLists.txt:20 (message):
-  Attempt to compile on unknown target, including stub API.
-
-
--- Configuring done (0.2s)
--- Generating done (0.0s)
--- Build files have been written to: C:/Users/Neon/Projects/Coding/pci-info-rs/compat/src/cmake-build-debug

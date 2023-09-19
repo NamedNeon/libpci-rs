@@ -8,4 +8,7 @@ path = "lib.rs"
 
 [dependencies]
 libc = "0.2.148"
+
+[build-dependencies]
 bindgen = "0.68.1"
+cmake = "0.1.50"
