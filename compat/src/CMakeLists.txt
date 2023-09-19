@@ -9,21 +9,15 @@ set(CMAKE_CXX_FLAGS ${FLAGS})
 set(CMAKE_C_FLAGS ${FLAGS})
 set(CTEST_OUTPUT_ON_FAILURE 1)
 
-set(SOURCE_FILES common.c)
+set(SOURCE_FILES common.c common.cpp)
 
 if(APPLE)
-    set(SOURCE_FILES ${SOURCE_FILES} darwin/mod.cc)
+    set(SOURCE_FILES ${SOURCE_FILES} darwin/mod.cpp)
 elseif(BSD STREQUAL "OpenBSD")
     set(SOURCE_FILES ${SOURCE_FILES} bsd/mod.c)
 else()
     set(SOURCE_FILES ${SOURCE_FILES} stub.c)
     message(WARNING "Attempt to compile on unknown target, including stub API.")
-endif()
-
-# Since we need C++ for some OSes (i.e. Darwin). We are including some extra C++ goodies on top of the normal
-# C API so we can elegant solid C++ code.
-if(CPP_BACKEND)
-    set(SOURCE_FILES ${SOURCE_FILES} common.cc)
 endif()
 
 add_library(libpci-rs-c-backend STATIC ${SOURCE_FILES})
@@ -32,6 +26,11 @@ add_executable(test_stack ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_stack.c)
 target_link_libraries(test_stack PUBLIC libpci-rs-c-backend)
 target_include_directories(test_stack PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tests/)
 add_test(NAME test_stack COMMAND test_stack)
+
+add_executable(test_stack_cpp ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_stack.cpp)
+target_link_libraries(test_stack_cpp PUBLIC libpci-rs-c-backend)
+target_include_directories(test_stack_cpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tests/)
+add_test(NAME test_stack_cpp COMMAND test_stack_cpp)
 
 target_include_directories(libpci-rs-c-backend PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
