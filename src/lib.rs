@@ -25,7 +25,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-pub mod backend;
+mod backend;
+pub use backend::{get_pci_list, get_pci_by_id};
+
 pub mod ids;
 pub mod pci;
 

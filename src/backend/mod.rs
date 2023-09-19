@@ -27,10 +27,10 @@
 
 //! libpci-rs's backend module is the programmatic layer that handles making syscalls to the underlying operating system.
 
-mod bindings;
 mod common;
+mod compat;
 
-pub use common::PciDevice;
+use crate::pci::{PciDevice, PciEnumerationError};
 
 use cfg_if::cfg_if;
 
@@ -42,16 +42,14 @@ cfg_if! {
         mod windows;
         use self::windows::{_get_pci_by_id, _get_pci_list};
     } else {
-        use bindings::{_get_pci_by_id, _get_pci_list};
+        use self::compat::{_get_pci_by_id, _get_pci_list};
     }
 }
-
-use crate::backend::common::PciEnumerationError;
 
 pub fn get_pci_list() -> Result<Vec<PciDevice>, PciEnumerationError> {
     _get_pci_list()
 }
 
-fn get_pci_by_id(vendor: u16, device: u16) -> Result<PciDevice, PciEnumerationError> {
+pub fn get_pci_by_id(vendor: u16, device: u16) -> Result<PciDevice, PciEnumerationError> {
     _get_pci_by_id(vendor, device)
 }

@@ -27,56 +27,9 @@
 
 use core::fmt;
 use std::{num::ParseIntError, fs::{DirEntry, read_to_string}};
-use std::io::ErrorKind;
 use std::fmt::Display;
 
-#[derive(Debug)]
-pub enum PciEnumerationError {
-    OsError,
-    GenericIoError(std::io::Error),
-    ReadDirectory,
-    NotFound,
-    PermissionDenied,
-    ParseInt(ParseIntError),
-}
-
-// Convert IO errors to PCI enumeration errors.
-impl From<std::io::Error> for PciEnumerationError {
-    fn from(err: std::io::Error) -> Self {
-        match err.kind() {
-            ErrorKind::NotFound => PciEnumerationError::NotFound,
-            ErrorKind::PermissionDenied => PciEnumerationError::PermissionDenied,
-            _ => PciEnumerationError::GenericIoError(err),
-        }
-    }
-}
-
-// Convert integer parsing error into PCI enumeration error.
-impl From<ParseIntError> for PciEnumerationError {
-    fn from(err: ParseIntError) -> Self {
-        PciEnumerationError::ParseInt(err)
-    }
-}
-
-// Define a PCI device as its component fields
-#[derive(Debug, Clone)]
-pub struct PciDevice {
-    pub domain: u32,
-    pub bus: u8,
-    pub device: u8,
-    pub function: u8,
-    pub label: String,
-    pub vendor_id: u16,
-    pub device_id: u16,
-    pub subsys_device_id: u16,
-    pub subsys_vendor_id: u16,
-    pub class: u8,
-    pub subclass: u8,
-    pub programming_interface: u8,
-    pub revision_id: u8,
-}
-
-
+use crate::pci::{PciEnumerationError};
 
 // ############################## Begin hex helper functions ##############################
 pub(crate) fn ox_hex_string_to_u8(input_string: &str) -> Result<u8, ParseIntError> {
@@ -152,14 +105,6 @@ pub(crate) fn get_pci_device_attribute_u32(dir: &Result<DirEntry, std::io::Error
     Ok(decoded_number)
 }
 // ############################## End attribute helper functions ##############################
-
-
-
-impl Display for PciDevice {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:04x}:{:02x}:{:02x}.{:x} VID={:04x} DID={:04x} SVID={:04x} SDID={:02x} Class={:x} Subclass={:x} PIF={:x} Rev={:x}", self.domain, self.bus, self.device, self.function, self.vendor_id, self.device_id, self.subsys_vendor_id, self.subsys_device_id, self.class, self.subclass, self.programming_interface, self.revision_id)
-    }
-}
 
 #[cfg(test)]
 mod tests {

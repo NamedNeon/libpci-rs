@@ -24,3 +24,75 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+use std::fmt;
+use std::fmt::Display;
+use std::num::ParseIntError;
+use std::io::ErrorKind;
+
+use thiserror::Error;
+use compat::{pci_error, pci_error_t};
+
+#[derive(Error, Debug)]
+pub enum PciEnumerationError {
+    Success, // Included for compat.
+    OsError,
+    GenericIoError(std::io::Error),
+    ReadDirectory,
+    NotFound,
+    PermissionDenied,
+    ParseInt(ParseIntError),
+}
+
+impl From<pci_error> for PciEnumerationError {
+    fn from(err: pci_error) -> Self {
+        match err {
+            pci_error::SUCCESS => PciEnumerationError::OsError
+            pci_error::OS_ERROR => {}
+            pci_error::READ_ERROR => {}
+            pci_error::PERMISSION_ERROR => {}
+        }
+    }
+}
+
+// Convert IO errors to PCI enumeration errors.
+impl From<std::io::Error> for PciEnumerationError {
+    fn from(err: std::io::Error) -> Self {
+        match err.kind() {
+            ErrorKind::NotFound => PciEnumerationError::NotFound,
+            ErrorKind::PermissionDenied => PciEnumerationError::PermissionDenied,
+            _ => PciEnumerationError::GenericIoError(err),
+        }
+    }
+}
+
+// Convert integer parsing error into PCI enumeration error.
+impl From<ParseIntError> for PciEnumerationError {
+    fn from(err: ParseIntError) -> Self {
+        PciEnumerationError::ParseInt(err)
+    }
+}
+
+// Define a PCI device as its component fields
+#[derive(Debug, Clone)]
+pub struct PciDevice {
+    pub domain: u32,
+    pub bus: u8,
+    pub device: u8,
+    pub function: u8,
+    pub label: String,
+    pub vendor_id: u16,
+    pub device_id: u16,
+    pub subsys_device_id: u16,
+    pub subsys_vendor_id: u16,
+    pub class: u8,
+    pub subclass: u8,
+    pub programming_interface: u8,
+    pub revision_id: u8,
+}
+
+impl Display for PciDevice {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:04x}:{:02x}:{:02x}.{:x} VID={:04x} DID={:04x} SVID={:04x} SDID={:02x} Class={:x} Subclass={:x} PIF={:x} Rev={:x}", self.domain, self.bus, self.device, self.function, self.vendor_id, self.device_id, self.subsys_vendor_id, self.subsys_device_id, self.class, self.subclass, self.programming_interface, self.revision_id)
+    }
+}

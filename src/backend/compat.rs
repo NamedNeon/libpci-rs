@@ -1,16 +1,16 @@
-use crate::backend::common::{PciDevice, PciEnumerationError};
+use crate::pci::{PciDevice, PciEnumerationError};
+
+use std::ffi::CStr;
 
 use compat::{
-    get_pci_by_id,
     get_pci_stack,
     create_pci_device_stack,
     pci_device_stack_pop,
     free_pci_device_stack,
     pci_device_stack_t,
-    pci_device_t
+    pci_device_t,
+    pci_error,
 };
-
-use std::ffi::CStr;
 
 fn conv_c_pci_device(device: pci_device_t) -> PciDevice {
     PciDevice {
@@ -49,7 +49,7 @@ fn pci_stack_to_list(stack: *mut pci_device_stack_t) -> Vec<PciDevice> {
 
 pub fn _get_pci_list() -> Result<Vec<PciDevice>, PciEnumerationError> {
     let mut stack: pci_device_stack_t;
-    let mut res: u32;
+    let mut res: pci_error_t;
 
     unsafe {
         stack = create_pci_device_stack();
