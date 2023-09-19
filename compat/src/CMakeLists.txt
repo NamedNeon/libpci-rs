@@ -9,10 +9,19 @@ set(CMAKE_CXX_FLAGS ${FLAGS})
 set(CMAKE_C_FLAGS ${FLAGS})
 set(CTEST_OUTPUT_ON_FAILURE 1)
 
-set(SOURCE_FILES common.c common.cpp)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+set(SOURCE_FILES common.c common.cpp) # Include common stuff.
 
 if(APPLE)
     set(SOURCE_FILES ${SOURCE_FILES} darwin/mod.c)
+    find_library(IOKit IOKit)
+    find_library(CoreFoundation CoreFoundation)
+    set(LIBRARIES ${LIBRARIES} ${IOKit} ${CoreFoundation})
 elseif(BSD STREQUAL "OpenBSD")
     set(SOURCE_FILES ${SOURCE_FILES} bsd/mod.c)
 else()
@@ -21,12 +30,15 @@ else()
 endif()
 
 add_library(libpci-rs-c-backend STATIC ${SOURCE_FILES})
+target_link_libraries(libpci-rs-c-backend PUBLIC ${LIBRARIES})
 
+# Test PCI stack.
 add_executable(test_stack ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_stack.c)
 target_link_libraries(test_stack PUBLIC libpci-rs-c-backend)
 target_include_directories(test_stack PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tests/)
 add_test(NAME test_stack COMMAND test_stack)
 
+# Test PCI stack C++ wrapper.
 add_executable(test_stack_cpp ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_stack.cpp)
 target_link_libraries(test_stack_cpp PUBLIC libpci-rs-c-backend)
 target_include_directories(test_stack_cpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tests/)

@@ -30,6 +30,13 @@
 
 #include <stdint.h>
 
+typedef enum pci_error {
+    SUCCESS = 0,
+    OS_ERROR = -1,
+    READ_ERROR = -2,
+    PERMISSION_ERROR = -3,
+} pci_error_t;
+
 typedef struct pci_device {
     uint32_t domain;
     uint8_t bus, device, function, revision_id;

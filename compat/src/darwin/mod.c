@@ -25,8 +25,11 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <CoreFoundation/CFDictionary.h>
+#include <CoreFoundation/CFData.h>
+
 #include <IOKit/IOKitLib.h>
-#include <IOKit/IOKitKeys.h>
+
 #include <Availability.h>
 
 #include "../api.h"
@@ -38,11 +41,11 @@
 #define DARWIN_IO_PORT kIOMasterPortDefault
 #endif
 
-#define CF_IS_DATA(x) CFTypeID(x) == CFDataGetTypeID()
+#define CF_IS_DATA(x) CFGetTypeID(x) == CFDataGetTypeID()
 
 #define kIOPCIDevice "IOPCIDevice"
 
-int get_pci_list(pci_device_stack_t* out) {
+int get_pci_stack(pci_device_stack_t* out) {
     pci_device_stack_t stack = create_pci_device_stack();
 
     io_iterator_t iterator = IO_OBJECT_NULL;
@@ -63,10 +66,10 @@ int get_pci_list(pci_device_stack_t* out) {
             continue;
         }
 
-        const void* vendor_id = CFDictionaryGetValue(service_dictionary, "vendor-id");
-        const void* device_id = CFDictionaryGetValue(service_dictionary, "device-id");
-        const void* revision_id = CFDictionaryGetValue(service_dictionary, "revision-id");
-        const void* class_code = CFDictionaryGetValue(service_dictionary, "class-code");
+        CFDataRef vendor_id = (CFDataRef) CFDictionaryGetValue(service_dictionary, "vendor-id");
+        CFDataRef device_id = (CFDataRef) CFDictionaryGetValue(service_dictionary, "device-id");
+        CFDataRef revision_id = (CFDataRef) CFDictionaryGetValue(service_dictionary, "revision-id");
+        CFDataRef class_code = (CFDataRef) CFDictionaryGetValue(service_dictionary, "class-code");
 
         // TODO: for the love of god there must be a better way to do this.
         if(
@@ -79,6 +82,7 @@ int get_pci_list(pci_device_stack_t* out) {
 
             uint8_t vendor_id_bytes[4];
             CFDataGetBytes(vendor_id, CFRangeMake(0, 3), vendor_id_bytes);
+            pci_device.vendor_id = vendor_id_bytes[3] << 8 | vendor_id_bytes[2];
 
             pci_device_stack_push(&stack, pci_device);
         } else {
