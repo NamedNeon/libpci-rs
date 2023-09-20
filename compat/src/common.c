@@ -31,7 +31,6 @@
 
 #include "api.h"
 
-__attribute__((__always_inline__))
 pci_device_stack_t create_pci_device_stack() {
     pci_device_stack_t stack;
     stack.buffer = NULL;
@@ -39,7 +38,6 @@ pci_device_stack_t create_pci_device_stack() {
     return stack;
 }
 
-__attribute__((__always_inline__))
 void free_pci_device_stack(pci_device_stack_t* stack) {
     free(stack->buffer);
     stack->len = 0;
@@ -70,5 +68,3 @@ pci_device_t pci_device_stack_pop(pci_device_stack_t* stack) {
 
     return device;
 }
-
-void extern throw_error(char* error);

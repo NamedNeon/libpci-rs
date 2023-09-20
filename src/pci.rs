@@ -31,26 +31,33 @@ use std::num::ParseIntError;
 use std::io::ErrorKind;
 
 use thiserror::Error;
-use compat::{pci_error, pci_error_t};
+use compat::{pci_error};
 
 #[derive(Error, Debug)]
 pub enum PciEnumerationError {
+    #[error("completed successfully.")]
     Success, // Included for compat.
+    #[error("an operating system specific error was encountered.")]
     OsError,
+    #[error("the following generic error occurred: {0}.")]
     GenericIoError(std::io::Error),
-    ReadDirectory,
+    #[error("a read error was encountered.")]
+    ReadError,
+    #[error("required files could not be found.")]
     NotFound,
+    #[error("permission denied.")]
     PermissionDenied,
+    #[error("the following integer parsing error occurred: {0}.")]
     ParseInt(ParseIntError),
 }
 
 impl From<pci_error> for PciEnumerationError {
     fn from(err: pci_error) -> Self {
         match err {
-            pci_error::SUCCESS => PciEnumerationError::OsError
-            pci_error::OS_ERROR => {}
-            pci_error::READ_ERROR => {}
-            pci_error::PERMISSION_ERROR => {}
+            pci_error::SUCCESS => PciEnumerationError::Success,
+            pci_error::OS_ERROR => PciEnumerationError::OsError,
+            pci_error::READ_ERROR => PciEnumerationError::ReadError,
+            pci_error::PERMISSION_ERROR => PciEnumerationError::PermissionDenied,
         }
     }
 }

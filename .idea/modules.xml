@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/libpci-rs.iml" filepath="$PROJECT_DIR$/.idea/libpci-rs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pci-info-rs.iml" filepath="$PROJECT_DIR$/.idea/pci-info-rs.iml" />
     </modules>
   </component>
 </project>

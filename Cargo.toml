@@ -12,12 +12,10 @@ categories = ["Operating systems", "PCI", "Bindings"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[target.'cfg(any(target_os = "openbsd", target_os = "macos", target_os = "freebsd"))'.dependencies]
-compat = { path = "./compat" } # C/C++ OS backends.
-
 [dependencies]
 cfg-if = "1.0.0"
 thiserror = "1.0.48"
+compat = { path = "./compat" } # C/C++ OS backends.
 
 [dependencies.windows]
 version = "0.51.1"

@@ -67,7 +67,7 @@ pub(crate) fn get_pci_device_attribute_u8(dir: &Result<DirEntry, std::io::Error>
     let dir_usable = match dir {
         Ok(f) => f,
         Err(_) => {
-            return Err(PciEnumerationError::ReadDirectory);
+            return Err(PciEnumerationError::ReadError);
         }
     };
 
@@ -81,7 +81,7 @@ pub(crate) fn get_pci_device_attribute_u16(dir: &Result<DirEntry, std::io::Error
     let dir_usable = match dir {
         Ok(f) => f,
         Err(_) => {
-            return Err(PciEnumerationError::ReadDirectory);
+            return Err(PciEnumerationError::ReadError);
         }
     };
 
@@ -95,7 +95,7 @@ pub(crate) fn get_pci_device_attribute_u32(dir: &Result<DirEntry, std::io::Error
     let dir_usable = match dir {
         Ok(f) => f,
         Err(_) => {
-            return Err(PciEnumerationError::ReadDirectory);
+            return Err(PciEnumerationError::ReadError);
         }
     };
 

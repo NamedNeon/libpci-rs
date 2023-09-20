@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="WSL - Debian" type="wsl" uuid="6dee5afa-aca9-4189-86ee-48b3a51270c1">
+        <config>
+          <option name="distributionMsId" value="Debian" />
+          <option name="projectRootOnTarget" value="/mnt/c/Program Files (x86)/JetBrains/CLion 2023.1.5/jbr/bin&#10;/pci-info-rs" />
+        </config>
+        <ContributedStateBase type="RsLanguageRuntime">
+          <config>
+            <option name="cargoPath" value="/home/neon/.cargo/bin/cargo" />
+            <option name="cargoVersion" value="1.72.0 (103a7ff2e 2023-08-15)" />
+            <option name="rustcPath" value="/home/neon/.cargo/bin/rustc" />
+            <option name="rustcVersion" value="1.72.0 (5680fa18f 2023-08-23)" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>
